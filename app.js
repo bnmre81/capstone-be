@@ -10,6 +10,10 @@ let io = socketIO(server);
 
 io.on("connection", (socket) => {
   console.log("A new user just connected");
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
 });
 
 const port = process.env.PORT || 8000;
