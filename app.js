@@ -1,3 +1,4 @@
+const { notDeepStrictEqual } = require("assert");
 const express = require("express");
 const app = express();
 const http = require("http");
@@ -8,19 +9,27 @@ const socketIO = require("socket.io");
 let server = http.createServer(app);
 let io = socketIO(server);
 
+// Rooms
+
 // Connecting to app
 io.on("connection", (socket) => {
   console.log(`User connected to ${socket.id}`);
 
   // Join room
-  socket.on("join_room", (room) => {
+  socket.on("join_room", ({ room, user }) => {
     socket.join(room);
-    console.log(`Joined room : ${room}`);
+    socket.user = user;
+    console.log(`${user} Joined room : ${room}`);
+  });
+
+  // fetch Rooms
+  socket.on("rooms", () => {
+    io.emit("message", rooms);
   });
 
   // Nominate
   socket.on("message", ({ room, movie }) => {
-    socket.to(room).emit("message", { movie });
+    io.in(room).emit("message", { movie });
   });
 
   // Close app to disconnect
