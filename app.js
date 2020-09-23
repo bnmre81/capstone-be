@@ -1,4 +1,3 @@
-const { notDeepStrictEqual } = require("assert");
 const express = require("express");
 const app = express();
 const http = require("http");
@@ -8,8 +7,6 @@ const socketIO = require("socket.io");
 //Creating a server
 let server = http.createServer(app);
 let io = socketIO(server);
-
-// Rooms
 
 // Connecting to app
 io.on("connection", (socket) => {
@@ -28,8 +25,13 @@ io.on("connection", (socket) => {
   });
 
   // Nominate
-  socket.on("message", ({ room, movie }) => {
-    io.in(room).emit("message", { movie });
+  socket.on("nominate", ({ room, movie }) => {
+    io.in(room).emit("nominate", { movie });
+  });
+
+  // Vote
+  socket.on("vote", ({ room, movieId }) => {
+    io.in(room).emit("vote", { movieId });
   });
 
   // Close app to disconnect
