@@ -8,6 +8,12 @@ const socketIO = require("socket.io");
 let server = http.createServer(app);
 let io = socketIO(server);
 
+const getUsers = (room) => {
+  io.in(room).clients((error, clients) => {
+    io.in(room).emit("getUsers", clients);
+  });
+};
+
 // Connecting to app
 io.on("connection", (socket) => {
   console.log(`User connected to ${socket.id}`);
@@ -22,6 +28,11 @@ io.on("connection", (socket) => {
   // fetch Rooms
   socket.on("rooms", () => {
     io.emit("message", rooms);
+  });
+
+  // Users in room
+  socket.on("getUsers", ({ room }) => {
+    getUsers(room);
   });
 
   // Nominate
