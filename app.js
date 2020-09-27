@@ -1,12 +1,11 @@
 const express = require("express");
 const app = express();
 const http = require("http");
-const path = require("path");
 const socketIO = require("socket.io");
 
 //Creating a server
-let server = http.createServer(app);
-let io = socketIO(server);
+const server = http.createServer(app);
+const io = socketIO(server);
 
 const getUsers = (room) => {
   io.in(room).clients((error, clients) => {
@@ -14,7 +13,6 @@ const getUsers = (room) => {
   });
 };
 
-// Connecting to app
 io.on("connection", (socket) => {
   console.log(`User connected to ${socket.id}`);
 
@@ -22,7 +20,7 @@ io.on("connection", (socket) => {
   socket.on("join_room", ({ room, user }) => {
     socket.join(room);
     socket.user = user;
-    console.log(`${user} Joined room : ${room}`);
+    console.log(`${user} joined room ${room}`);
   });
 
   // fetch Rooms
@@ -35,6 +33,10 @@ io.on("connection", (socket) => {
     getUsers(room);
   });
 
+  // Start
+  socket.on("start", ({ room }) => {
+    io.in(room).emit("start", { room });
+  });
   // Nominate
   socket.on("nominate", ({ room, movie }) => {
     io.in(room).emit("nominate", { movie });
