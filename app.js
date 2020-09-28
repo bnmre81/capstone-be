@@ -20,6 +20,7 @@ io.on("connection", (socket) => {
   socket.on("join_room", ({ room, user }) => {
     socket.join(room);
     socket.user = user;
+    getUsers(room);
     console.log(`${user} joined room ${room}`);
   });
 
@@ -48,8 +49,8 @@ io.on("connection", (socket) => {
   });
 
   // Done
-  socket.on("done", ({ room }) => {
-    io.in(room).emit("done", { room });
+  socket.on("done", ({ room, username }) => {
+    io.in(room).emit("done", { username });
   });
 
   // Close app to disconnect
