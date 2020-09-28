@@ -47,9 +47,14 @@ io.on("connection", (socket) => {
     io.in(room).emit("vote", { movieId });
   });
 
+  // Done
+  socket.on("done", ({ room }) => {
+    io.in(room).emit("done", { room });
+  });
+
   // Close app to disconnect
   socket.on("disconnect", () => {
-    console.log("User disconnected");
+    console.log(`User disconnected`);
   });
 });
 
