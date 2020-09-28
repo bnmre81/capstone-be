@@ -48,7 +48,7 @@ io.on("connection", (socket) => {
     io.in(room).emit("vote", { movieId });
   });
 
-  // Done
+  // Done voting
   socket.on("done", ({ room, username }) => {
     io.in(room).emit("done", { username });
   });
